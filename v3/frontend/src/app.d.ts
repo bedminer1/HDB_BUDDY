@@ -10,4 +10,8 @@ declare global {
 	}
 }
 
-export {};
+interface Asset {
+	town: string
+	flatType: string
+	resalePrice: number
+}
