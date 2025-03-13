@@ -14,4 +14,5 @@ interface Asset {
 	town: string
 	flatType: string
 	resalePrice: number
+	percentageChange: number
 }
