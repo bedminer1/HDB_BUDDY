@@ -30,6 +30,7 @@
 	let dates: string[] = []
 	$: {
 		dates = []
+		// @ts-ignore
 		const recordWithMostRecords = data.records.reduce((maxRecord, current) =>
 			current.records.length > maxRecord.records.length ? current : maxRecord
 		)
@@ -47,6 +48,7 @@
 
 	let pricesArr: (number | null)[][] = []
 	$: {
+		// @ts-ignore
 		pricesArr = data.records.map(townRecord => {
 			let townPrices = Array(dates.length).fill(null);
 			for (let timeRecord of townRecord.records) {
