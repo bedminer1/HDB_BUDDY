@@ -9,7 +9,6 @@
     let { data } = $props()
     let { graphDataPoints, user } = data
 
-    let assets: Asset[] = []
     let pfVal: number = $state(graphDataPoints.at(-1)?.resalePrice)!
     let mortgageVal: number = $state(user.mortgage)
     let pfValCommas: string = $derived(numberWithCommas(pfVal))
@@ -19,15 +18,18 @@
     let pfDeltaCommas: string = $derived(numberWithCommas(pfDelta < 0 ? -pfDelta : pfDelta))
     let pfPercentDelta: number = $derived(pfDelta / pfVal * 100)
 
-    let pfValueGraphData: DataSet[] = [
+    let windowStr: string = $state("7")
+    let window: number = $derived(Number(windowStr))
+    $inspect(window)
+    let pfValueGraphData: DataSet[] = $derived([
         {
             label: "",
-			data: graphDataPoints.map(point => point.resalePrice),
-			xAxis: graphDataPoints.map(point => point.date),
+			data: graphDataPoints.slice(graphDataPoints.length - 1 - window).map(point => point.resalePrice),
+			xAxis: graphDataPoints.slice(graphDataPoints.length - 1 - window).map(point => point.date),
 			borderColor: "#4BAAC8",
 			backgroundColor: "#4BAAC8"
         }
-    ]
+    ])
 
     function numberWithCommas(n: number): string {
         return n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -83,23 +85,23 @@
              label: "Value (SGD)"
          }} />	
          
-        <ToggleGroup.Root class="mb-6" type="single">
-            <ToggleGroup.Item value="1D">
-                1D
-            </ToggleGroup.Item>
-            <ToggleGroup.Item value="1W">
+        <ToggleGroup.Root class="mb-6" type="single" bind:value={windowStr}>
+            <ToggleGroup.Item value=7>
                 1W
             </ToggleGroup.Item>
-            <ToggleGroup.Item value="1M">
+            <ToggleGroup.Item value=30>
                 1M
             </ToggleGroup.Item>
-            <ToggleGroup.Item value="3M">
+            <ToggleGroup.Item value=90>
                 3M
             </ToggleGroup.Item>
-            <ToggleGroup.Item value="1Y">
+            <ToggleGroup.Item value=365>
                 1Y
             </ToggleGroup.Item>
-            <ToggleGroup.Item value="All">
+            <ToggleGroup.Item value=1825>
+                5Y
+            </ToggleGroup.Item>
+            <ToggleGroup.Item value="0{graphDataPoints.length-1}">
                 All
             </ToggleGroup.Item>
         </ToggleGroup.Root>
