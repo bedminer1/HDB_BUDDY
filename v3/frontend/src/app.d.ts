@@ -16,3 +16,12 @@ interface Asset {
 	resalePrice: number
 	percentageChange: number
 }
+
+
+interface DataSet {
+	label: string;
+	data: (number | null)[];
+	xAxis: string[];
+	borderColor: string;
+	backgroundColor: string;
+}

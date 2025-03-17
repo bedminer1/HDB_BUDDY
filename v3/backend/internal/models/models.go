@@ -2,7 +2,9 @@ package models
 
 import (
 	"time"
+
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type HDBRecord struct {
@@ -18,4 +20,14 @@ type HDBRecord struct {
 	LeaseCommenceDate int       `json:"lease_commence_date"`
 	ResalePrice       int       `json:"resale_price"`
 	PricePerArea      float64   `json:"price_per_area"`
+}
+
+type User struct {
+	gorm.Model
+	Username    string
+	FlatType    string `gorm:"index" json:"flat_type"`
+	Town        string `gorm:"index" json:"town"`
+	StoreyRange string `json:"storey_range"`
+	StreetName  string `json:"street_name"`
+	Mortgage    int
 }

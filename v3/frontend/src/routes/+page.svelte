@@ -3,6 +3,7 @@
     import { Separator } from "$lib/components/ui/separator/index.js";
     import { Button } from "$lib/components/ui/button/index.js";
     import * as ToggleGroup from "$lib/components/ui/toggle-group/index.js";
+    import LineChart from "$lib/components/LineChart.svelte";
 
     // USER STATS
     let assets: Asset[] = []
@@ -14,6 +15,16 @@
     let pfDelta: number = $state(-73320.12)
     let pfDeltaCommas: string = $derived(numberWithCommas(pfDelta < 0 ? -pfDelta : pfDelta))
     let pfPercentDelta: number = $derived(pfDelta / pfVal * 100)
+
+    let pfValueGraphData: DataSet[] = [
+        {
+            label: "",
+			data: [15, 2, 3, 1, 24, 22, 12],
+			xAxis: ["a", "b", "c", "d", "d", "d", "d", "d"],
+			borderColor: "#4BAAC8",
+			backgroundColor: "#4BAAC8"
+        }
+    ]
 
     function numberWithCommas(n: number): string {
         return n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -63,7 +74,12 @@
          </div>
          
          <!-- Graph -->
-        <div class="border-2 w-full h-60 flex justify-center items-center mb-2">GRAPH PLACEHOLDER</div>
+         <LineChart
+         {...{
+             stats: pfValueGraphData,
+             label: "Value (SGD)"
+         }} />	
+         
         <ToggleGroup.Root class="mb-6" type="single">
             <ToggleGroup.Item value="1D">
                 1D
@@ -135,7 +151,9 @@
             {/each}
         </div>
 
-         <Button class="w-3/4 mx-16 rounded-3xl bg-secondary hover:bg-gray-600 text-primary">Manage</Button>
+        <div class="flex justify-center">
+            <Button class="w-3/4 rounded-3xl bg-secondary hover:bg-gray-600 text-primary">Manage</Button>
+        </div>
 
      </div>
      
@@ -149,6 +167,8 @@
          <!-- Top gainers, Top losers, Most listings -->
          <div class="border-2 w-full h-60 flex justify-center items-center mb-5">LEADERBOARDS PLACEHOLDER</div>
 
-         <Button class="w-3/4 mx-16 rounded-3xl bg-secondary hover:bg-gray-600 text-primary">Explore Leaderboards</Button>
+        <div class="flex justify-center">
+            <Button class="w-3/4 rounded-3xl bg-secondary hover:bg-gray-600 text-primary">Explore Leaderboards</Button>
+        </div>
      </div>
 </div>

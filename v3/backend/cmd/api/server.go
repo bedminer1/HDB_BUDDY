@@ -11,6 +11,7 @@ func main() {
 	h := initHandler()
 
 	e.GET("/healthcheck", h.handleHealthCheck)
+	e.GET("/frontpage", h.handleFrontPage)
 
 	e.Logger.Fatal(e.Start(":4000"))
 }

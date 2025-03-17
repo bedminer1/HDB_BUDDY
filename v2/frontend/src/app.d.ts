@@ -32,5 +32,5 @@ interface DataSet {
 	xAxis: string[];
 	borderColor: string;
 	backgroundColor: string;
-  }
+}
   
