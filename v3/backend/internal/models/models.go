@@ -24,10 +24,17 @@ type HDBRecord struct {
 
 type User struct {
 	gorm.Model
-	Username    string
+	Username    string `json:"username"`
 	FlatType    string `gorm:"index" json:"flat_type"`
 	Town        string `gorm:"index" json:"town"`
 	StoreyRange string `json:"storey_range"`
 	StreetName  string `json:"street_name"`
-	Mortgage    int
+	FloorArea   int    `json:"floor_area"`
+	Mortgage    int    `json:"mortgage"`
+}
+
+type GraphData struct {
+	PricePerArea      float64   `json:"pricePerArea"`
+	ScaledResalePrice float64   `json:"resalePrice"`
+	Date              time.Time `json:"date"`
 }

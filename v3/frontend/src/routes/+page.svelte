@@ -6,9 +6,12 @@
     import LineChart from "$lib/components/LineChart.svelte";
 
     // USER STATS
+    let { data } = $props()
+    let { graphDataPoints, user } = data
+
     let assets: Asset[] = []
-    let pfVal: number = $state(621433.32)
-    let mortgageVal: number = $state(23322.12)
+    let pfVal: number = $state(graphDataPoints.at(-1)?.resalePrice)!
+    let mortgageVal: number = $state(user.mortgage)
     let pfValCommas: string = $derived(numberWithCommas(pfVal))
     let mortgageValCommas: string = $derived(numberWithCommas(mortgageVal))
 
@@ -19,8 +22,8 @@
     let pfValueGraphData: DataSet[] = [
         {
             label: "",
-			data: [15, 2, 3, 1, 24, 22, 12],
-			xAxis: ["a", "b", "c", "d", "d", "d", "d", "d"],
+			data: graphDataPoints.map(point => point.resalePrice),
+			xAxis: graphDataPoints.map(point => point.date),
 			borderColor: "#4BAAC8",
 			backgroundColor: "#4BAAC8"
         }

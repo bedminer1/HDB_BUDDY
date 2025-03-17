@@ -25,3 +25,9 @@ interface DataSet {
 	borderColor: string;
 	backgroundColor: string;
 }
+
+interface GraphDataPoint {
+	pricePerArea: number
+	resalePrice: number
+	date: string
+}

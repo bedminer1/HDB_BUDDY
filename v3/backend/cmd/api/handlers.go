@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"github.com/bedminer1/HDB_BUDDY/v3/internal/models"
 	"github.com/labstack/echo/v4"
 	"gorm.io/driver/sqlite"
@@ -30,6 +32,16 @@ func (h *handler) handleHealthCheck(c echo.Context) error {
 	})
 }
 
+func sortRecordsByDate(records []models.HDBRecord) {
+	for i := 0; i < len(records)-1; i++ {
+		for j := i + 1; j < len(records); j++ {
+			if records[i].Time.After(records[j].Time) {
+				records[i], records[j] = records[j], records[i]
+			}
+		}
+	}
+}
+
 func (h *handler) handleFrontPage(c echo.Context) error {
 
 	// ====== USER STATS =======
@@ -47,9 +59,36 @@ func (h *handler) handleFrontPage(c echo.Context) error {
 
 	// queries HDB records db,
 	// finding records with matching town n flat type
+	hdbRecords := []models.HDBRecord{}
+	h.DB.Where("town = ? AND street_name = ? AND flat_type = ?", user.Town, user.StreetName, user.FlatType).Find(&hdbRecords)
 
-	// averages and computes time based records
-	// change in price per sqft over time
+	// converts to time based records
+	// change in price per sqft over time (daily)
+	sortRecordsByDate(hdbRecords)
+	graphData := []models.GraphData{}
+	startDate := hdbRecords[0].Time
+	endDate := hdbRecords[len(hdbRecords)-1].Time
+
+	currentDate := startDate
+	lastPrice := 0.0
+	lastScaledPrice := 0.0
+	recordIndex := 0
+
+	for !currentDate.After(endDate) {
+		for recordIndex < len(hdbRecords) && hdbRecords[recordIndex].Time.Truncate(24*time.Hour).Equal(currentDate) {
+			lastPrice = hdbRecords[recordIndex].PricePerArea
+			lastScaledPrice = lastPrice * float64(user.FloorArea)
+			recordIndex++
+		}
+
+		graphData = append(graphData, models.GraphData{
+			PricePerArea:      lastPrice,
+			ScaledResalePrice: lastScaledPrice,
+			Date:              currentDate,
+		})
+
+		currentDate = currentDate.AddDate(0, 0, 1)
+	}
 
 	// ====== WATCHLIST =======
 
@@ -59,6 +98,7 @@ func (h *handler) handleFrontPage(c echo.Context) error {
 	// 1. assets owned by user
 	// 2. graph data, for scaled total price and price per sqft
 	return c.JSON(200, echo.Map{
-		"user": user,
+		"user":            user,
+		"graphDataPoints": graphData,
 	})
 }
