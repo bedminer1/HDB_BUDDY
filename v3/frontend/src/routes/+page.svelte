@@ -13,13 +13,14 @@
     let mortgageVal: number = $state(user.mortgage)
     let pfValCommas: string = $derived(numberWithCommas(pfVal))
     let mortgageValCommas: string = $derived(numberWithCommas(mortgageVal))
+    
+    let windowStr: string = $state("3650")
+    let window: number = $derived(Number(windowStr))
 
-    let pfDelta: number = $state(-73320.12)
+    let pfDelta: number = $derived(graphDataPoints.at(-1)?.resalePrice! - graphDataPoints.at(-window)?.resalePrice!)
     let pfDeltaCommas: string = $derived(numberWithCommas(pfDelta < 0 ? -pfDelta : pfDelta))
     let pfPercentDelta: number = $derived(pfDelta / pfVal * 100)
 
-    let windowStr: string = $state("7")
-    let window: number = $derived(Number(windowStr))
     let pfValueGraphData: DataSet[] = $derived([
         {
             label: "",
