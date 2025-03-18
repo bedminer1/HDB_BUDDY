@@ -20,7 +20,6 @@
 
     let windowStr: string = $state("7")
     let window: number = $derived(Number(windowStr))
-    $inspect(window)
     let pfValueGraphData: DataSet[] = $derived([
         {
             label: "",
@@ -86,9 +85,6 @@
          }} />	
          
         <ToggleGroup.Root class="mb-6" type="single" bind:value={windowStr}>
-            <ToggleGroup.Item value=7>
-                1W
-            </ToggleGroup.Item>
             <ToggleGroup.Item value=30>
                 1M
             </ToggleGroup.Item>
@@ -100,6 +96,9 @@
             </ToggleGroup.Item>
             <ToggleGroup.Item value=1825>
                 5Y
+            </ToggleGroup.Item>
+            <ToggleGroup.Item value=3650>
+                10Y
             </ToggleGroup.Item>
             <ToggleGroup.Item value="0{graphDataPoints.length-1}">
                 All
