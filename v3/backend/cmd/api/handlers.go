@@ -14,7 +14,7 @@ type handler struct {
 }
 
 func initHandler() *handler {
-	db, err := gorm.Open(sqlite.Open("../../hdb_small.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("./hdb_small.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
