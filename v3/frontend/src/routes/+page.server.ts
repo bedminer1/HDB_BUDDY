@@ -1,5 +1,5 @@
 export async function load({ params }) {
-    const url = "http://localhost:4000/frontpage?username=bed"
+    const url = "https://hdbbuddy-production.up.railway.app/frontpage?username=bed"
 
     try {
         const response = await fetch(url)
