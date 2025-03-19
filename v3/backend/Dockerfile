@@ -10,8 +10,8 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=1 go build -o server
+RUN CGO_ENABLED=1 go build -o cmd/api/server
 
 EXPOSE 4000
 
-CMD ["./server"]
+CMD ["./cmd/api/server"]
