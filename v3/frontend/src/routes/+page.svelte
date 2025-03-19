@@ -17,7 +17,7 @@
     let windowStr: string = $state("3650")
     let window: number = $derived(Number(windowStr))
 
-    let pfDelta: number = $derived(graphDataPoints.at(-1)?.resalePrice! - graphDataPoints.at(-window)?.resalePrice!)
+    let pfDelta: number = $derived(graphDataPoints.at(-1)?.resalePrice! - (graphDataPoints.at(-window)?.resalePrice || graphDataPoints[0].resalePrice))
     let pfDeltaCommas: string = $derived(numberWithCommas(pfDelta < 0 ? -pfDelta : pfDelta))
     let pfPercentDelta: number = $derived(pfDelta / pfVal * 100)
 
