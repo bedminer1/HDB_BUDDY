@@ -3,6 +3,8 @@ export async function load({ params }) {
 
     const url = env === "dev" ? "http://localhost:4000/frontpage?username=bed" : "https://hdbbuddy-production.up.railway.app/frontpage?username=bed"
 
+    console.log("ENV: ", env, "\nURL: ", url)
+
     try {
         const response = await fetch(url)
         const data = await response.json()
