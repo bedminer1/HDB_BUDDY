@@ -6,7 +6,6 @@
     Chart.register(LineController, LineElement, PointElement, LinearScale, Title, CategoryScale, Tooltip, Legend);
 
     export let stats : DataSet[] 
-    export let label : string
 
     let chart: Chart | null = null
     let chartCanvas: HTMLCanvasElement
@@ -57,19 +56,11 @@
                 },
                 scales: {
                     y: {
-                        title: {
-                            display: false,
-                            text: label,
-                        },
                         ticks: {
                             display: false,
                         }
                     },
                     x: {
-                        title: {
-                            display: true,
-                            text: 'Date',
-                        },
                         ticks: {
                             display: false,
                         }

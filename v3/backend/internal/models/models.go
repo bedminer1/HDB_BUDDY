@@ -24,13 +24,20 @@ type HDBRecord struct {
 
 type User struct {
 	gorm.Model
-	Username    string `json:"username"`
-	FlatType    string `gorm:"index" json:"flat_type"`
-	Town        string `gorm:"index" json:"town"`
-	StoreyRange string `json:"storey_range"`
-	StreetName  string `json:"street_name"`
-	FloorArea   int    `json:"floor_area"`
-	Mortgage    int    `json:"mortgage"`
+	Username    string   `json:"username"`
+	FlatType    string   `gorm:"index" json:"flat_type"`
+	Town        string   `gorm:"index" json:"town"`
+	StoreyRange string   `json:"storey_range"`
+	StreetName  string   `json:"street_name"`
+	FloorArea   int      `json:"floor_area"`
+	Mortgage    int      `json:"mortgage"`
+	Watchlisted string `json:"watchlisted"` // each watchlist item formated town+flatType+streetName
+}
+
+type Asset struct {
+	Town       string
+	FlatType   string
+	StreetName string
 }
 
 type GraphData struct {

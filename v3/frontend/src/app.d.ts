@@ -13,6 +13,7 @@ declare global {
 interface Asset {
 	town: string
 	flatType: string
+	graph: DataSet[]
 	resalePrice: number
 	percentageChange: number
 }

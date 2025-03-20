@@ -1,8 +1,9 @@
 package main
 
 import (
-	"time"
+	"strings"
 
+	"github.com/bedminer1/HDB_BUDDY/v3/internal/graph"
 	"github.com/bedminer1/HDB_BUDDY/v3/internal/models"
 	"github.com/labstack/echo/v4"
 	"gorm.io/driver/sqlite"
@@ -32,16 +33,6 @@ func (h *handler) handleHealthCheck(c echo.Context) error {
 	})
 }
 
-func sortRecordsByDate(records []models.HDBRecord) {
-	for i := 0; i < len(records)-1; i++ {
-		for j := i + 1; j < len(records); j++ {
-			if records[i].Time.After(records[j].Time) {
-				records[i], records[j] = records[j], records[i]
-			}
-		}
-	}
-}
-
 func (h *handler) handleFrontPage(c echo.Context) error {
 
 	// ====== USER STATS =======
@@ -64,33 +55,29 @@ func (h *handler) handleFrontPage(c echo.Context) error {
 
 	// converts to time based records
 	// change in price per sqft over time (daily)
-	sortRecordsByDate(hdbRecords)
-	graphData := []models.GraphData{}
-	startDate := hdbRecords[0].Time
-	endDate := hdbRecords[len(hdbRecords)-1].Time
-
-	currentDate := startDate
-	lastPrice := 0.0
-	lastScaledPrice := 0.0
-	recordIndex := 0
-
-	for !currentDate.After(endDate) {
-		for recordIndex < len(hdbRecords) && hdbRecords[recordIndex].Time.Truncate(24*time.Hour).Equal(currentDate) {
-			lastPrice = hdbRecords[recordIndex].PricePerArea
-			lastScaledPrice = lastPrice * float64(user.FloorArea)
-			recordIndex++
-		}
-
-		graphData = append(graphData, models.GraphData{
-			PricePerArea:      lastPrice,
-			ScaledResalePrice: lastScaledPrice,
-			Date:              currentDate,
-		})
-
-		currentDate = currentDate.AddDate(0, 0, 1)
-	}
+	graphData := graph.RecordsGraph(hdbRecords, user)
 
 	// ====== WATCHLIST =======
+	// get list of watchlisted assets from users db
+	watchlistedAssets := []models.Asset{}
+	watchlistStrSplit := strings.Split(user.Watchlisted, ",")
+	for _, assetStr := range watchlistStrSplit {
+		assetStrSplit := strings.Split(assetStr, "+")
+		watchlistedAssets = append(watchlistedAssets, models.Asset{
+			Town:       assetStrSplit[0],
+			FlatType:   assetStrSplit[1],
+			StreetName: assetStrSplit[2],
+		})
+	}
+
+	// fetch watchlisted assets from records db
+	watchlistGraphData := [][]models.GraphData{}
+	for _, asset := range watchlistedAssets {
+		assetRecords := []models.HDBRecord{}
+		h.DB.Where("town = ? AND street_name = ? AND flat_type = ?", asset.Town, asset.StreetName, asset.FlatType).Find(&assetRecords)
+		assetGraphData := graph.RecordsGraph(assetRecords, user)
+		watchlistGraphData = append(watchlistGraphData, assetGraphData)
+	}
 
 	// ===== LEADERBOARDS ======
 
@@ -100,5 +87,6 @@ func (h *handler) handleFrontPage(c echo.Context) error {
 	return c.JSON(200, echo.Map{
 		"user":            user,
 		"graphDataPoints": graphData,
+		"watchlistGraphDataPoints": watchlistGraphData,
 	})
 }

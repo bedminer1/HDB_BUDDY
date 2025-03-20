@@ -7,7 +7,7 @@
 
     // USER STATS
     let { data } = $props()
-    let { graphDataPoints, user } = data
+    let { graphDataPoints, user, watchlistGraphDataPoints } = data
 
     let pfVal: number = $state(graphDataPoints.at(-1)?.resalePrice)!
     let mortgageVal: number = $state(user.mortgage)
@@ -31,31 +31,44 @@
         }
     ])
 
+    let watchlistGraphData: DataSet[][] = $derived(watchlistGraphDataPoints.map((assetGraphDataPoints) => [
+        {
+            label: "",
+            data: assetGraphDataPoints.slice(assetGraphDataPoints.length - 1 - window).map((point) => point.resalePrice),
+            xAxis: assetGraphDataPoints.slice(assetGraphDataPoints.length - 1 - window).map((point) => point.date),
+            borderColor: "#FF8C00",
+            backgroundColor: "#FF8C00",
+        },
+    ]))
+
     function numberWithCommas(n: number): string {
         return n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     } 
 
 
-    let watchListedAssets: Asset[] = [
+    let watchListedAssets: Asset[] = $derived([
         {
             town: "QUEENSTOWN",
             flatType: "4 ROOM",
+            graph: watchlistGraphData[0],
             resalePrice: 502234.32,
             percentageChange: 3.24
         },
         {
             town: "CLEMENTI",
             flatType: "4 ROOM",
+            graph: watchlistGraphData[1],
             resalePrice: 632042.30,
             percentageChange: -2.13
         },
         {
             town: "BISHAN",
             flatType: "4 ROOM",
+            graph: watchlistGraphData[2],
             resalePrice: 435022.20,
             percentageChange: 0.12
         },
-    ]
+    ])
 
     function deAllCaps(str: string): string {
         str = str.toLowerCase()
@@ -145,6 +158,14 @@
                     <div>
                         <p>{deAllCaps(asset.town)}</p>
                         <p class="text-sm text-gray-500">{asset.flatType}</p>
+                    </div>
+
+                    <div class="w-24 h-20">
+                        <LineChart
+                        {...{
+                            stats: asset.graph,
+                            label: "Value (SGD)"
+                        }} />	
                     </div>
     
                     <div class="flex flex-col items-end">
