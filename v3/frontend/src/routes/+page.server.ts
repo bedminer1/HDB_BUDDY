@@ -9,7 +9,7 @@ export async function load({ params }) {
         const response = await fetch(url)
         const data = await response.json()
         const { graphDataPoints, user, watchlistGraphDataPoints }: { graphDataPoints: GraphDataPoint[], user: any, watchlistGraphDataPoints:  GraphDataPoint[][]} = await data
-        console.log(user, watchlistGraphDataPoints)
+
         return {
             user,
             graphDataPoints,

@@ -26,6 +26,7 @@
     }
 
     function createChart() {
+
         chart = new Chart(chartCanvas, {
             type: 'line',
             data: {
@@ -75,4 +76,4 @@
     });
 </script>
 
-<canvas class="w-full" bind:this={chartCanvas}></canvas>
+<canvas class="w-full rounded-md" bind:this={chartCanvas}></canvas>

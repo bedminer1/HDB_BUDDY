@@ -45,7 +45,6 @@
         return n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     } 
 
-
     let watchListedAssets: Asset[] = $derived([
         {
             town: "QUEENSTOWN",
@@ -94,8 +93,8 @@
          <!-- Graph -->
          <LineChart
          {...{
-             stats: pfValueGraphData,
-             label: "Value (SGD)"
+            stats: pfValueGraphData,
+            hovered: false,
          }} />	
          
         <ToggleGroup.Root class="mb-6" type="single" bind:value={windowStr}>
@@ -151,10 +150,10 @@
         </div>
 
         <!-- Current price, Percentage Change -->
-        <div class="mb-5">
+        <div class="mb-5 w-full">
             {#each watchListedAssets as asset}
             <a href="/stats/{asset.town}+{asset.flatType}">
-                <div class="flex justify-between hover:bg-zinc-900 p-2 px-4 rounded-md">
+                <div class="flex justify-between opacity-80 hover:opacity-100 p-2 px-4 rounded-md">
                     <div>
                         <p>{deAllCaps(asset.town)}</p>
                         <p class="text-sm text-gray-500">{asset.flatType}</p>
@@ -164,7 +163,7 @@
                         <LineChart
                         {...{
                             stats: asset.graph,
-                            label: "Value (SGD)"
+                            label: "Value (SGD)",
                         }} />	
                     </div>
     
